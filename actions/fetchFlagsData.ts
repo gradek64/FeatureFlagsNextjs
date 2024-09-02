@@ -1,11 +1,16 @@
-// app/actions/fetchMockData.ts
-import fs from 'fs';
-import path from 'path';
+export async function fetchConfig() {
+  const configsResponseJson = await (
+    await fetch(
+      "https://api.github.com/repos/sainsburys-tech/argos-checkout-ui-consul-configs/contents/configs/ui-payment/dev/dev.json",
+      {
+        headers: {
+          Accept: "application/vnd.github.v3.raw", // returns raw json file not encoded
+          Authorization: `token ${process.env.GITHUB_PACKAGES_AUTH_TOKEN}`,
+        },
+      }
+    )
+  ).json();
+  const { features } = configsResponseJson;
 
-export async function fetchMockData() {
-  const filePath = path.join(process.cwd(), 'public', 'data', 'flags.json');
-  const jsonData = fs.readFileSync(filePath, 'utf8');
-  const data = JSON.parse(jsonData);
-  // console.log('Data fetched:', data);
-  return data;
+  return features;
 }

@@ -6,29 +6,27 @@ To use Server Actions in Next.js, you'll need to be on a version of Next.js that
  updating databases, or interacting with files.
 */
 
-import React from 'react';
+import React from "react";
 import { HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { dehydrate } from "@tanstack/query-core";
-import { fetchMockData } from '../actions/fetchFlagsData'
-import SearchFlagList from '../components/SearchFlag'
+import { fetchConfig } from "../actions/fetchFlagsData";
+import SearchFlagList from "../components/SearchFlag";
 
- 
- const HomePage = async () => {
-
+const HomePage = async () => {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: ["hydrate-flags"],
-    queryFn: fetchMockData,
+    queryFn: fetchConfig,
   });
- 
+
   return (
-
     <HydrationBoundary state={dehydrate(queryClient)}>
-    {/*HydrationBoundary is a wrapper that let you hydrate server fetched data
+      {/*HydrationBoundary is a wrapper that let you hydrate server fetched data
       down to the client components*/}
-    <SearchFlagList />
+      <SearchFlagList />
     </HydrationBoundary>
-  )}
+  );
+};
 
-  export default HomePage
+export default HomePage;
