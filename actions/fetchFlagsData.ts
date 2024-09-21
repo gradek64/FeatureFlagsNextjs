@@ -12,5 +12,7 @@ export async function fetchConfig() {
   ).json();
   const { features } = configsResponseJson;
 
+  console.log("api configsResponseJson", configsResponseJson);
+
   return features;
 }

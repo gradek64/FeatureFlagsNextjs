@@ -31,11 +31,11 @@ export default async function EditFlagPage({
 
   const tabs = [
     {
-      label: "Tab 1",
+      label: `Simple Tab ${flagValueType.toUpperCase()}`,
       component: <TabsContent activeTab={0} flagValueType={flagValueType} />,
     },
     {
-      label: "Tab 2",
+      label: `Complex Tab ${flagValueType.toUpperCase()}`,
       component: <TabsContent activeTab={1} flagValueType={flagValueType} />,
     },
   ];
