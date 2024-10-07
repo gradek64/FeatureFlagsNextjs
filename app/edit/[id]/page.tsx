@@ -1,7 +1,8 @@
 import { HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { dehydrate } from "@tanstack/query-core";
 import Modal from "../../../components/Modal";
-import Tabs from "../../../components/Tabs";
+// import Tabs from "../../../components/Tabs";
+import Accordion from "../../../components/Accordion";
 import TabsContent from "../../../components/TabsContent";
 import { fetchConfig } from "../../../actions/fetchFlagsData";
 
@@ -44,7 +45,8 @@ export default async function EditFlagPage({
     <Modal>
       <HydrationBoundary state={data || dehydrate(queryClient)}>
         <h2>Editing: {id}</h2>
-        <Tabs tabs={tabs} />
+        {/* <Tabs tabs={tabs} /> */}
+        <Accordion />
       </HydrationBoundary>
     </Modal>
   );

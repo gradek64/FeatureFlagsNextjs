@@ -11,6 +11,7 @@ import { HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { dehydrate } from "@tanstack/query-core";
 import { fetchConfig } from "../actions/fetchFlagsData";
 import SearchFlagList from "../components/SearchFlag";
+// import DispalyObjectTest from "../components/DispalyObjectTest";
 
 const HomePage = async () => {
   const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const HomePage = async () => {
       {/*HydrationBoundary is a wrapper that let you hydrate server fetched data
       down to the client components*/}
       <SearchFlagList />
+      {/* <DispalyObjectTest /> */}
     </HydrationBoundary>
   );
 };
