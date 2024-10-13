@@ -1,8 +1,9 @@
 "use client";
 
-import { QueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import { useAppContext } from "@/context/ContextProvider";
+import FlagComparison from "@/components/FlagComparison"; // Import the comparison component
 
 const InputField = ({ label, value, onChange }) => (
   <div className="mb-4">
@@ -16,105 +17,129 @@ const InputField = ({ label, value, onChange }) => (
   </div>
 );
 
-const AccordionForm = () => {
-  const [activeAccordion, setActiveAccordion] = useState(null);
+const AccordionForm = ({ editFlag }: { editFlag: string }) => {
+  const { state, dispatch } = useAppContext();
+  const { features } = state;
 
-  const router = useRouter();
-  const params = useParams();
-  const queryClient = new QueryClient();
-  const { id: paramString } = useParams();
+  // Get the current feature flag value from the state
+  const currentFlagValue = features?.[editFlag];
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
+  const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
+  const [showComparison, setShowComparison] = useState(false); // State to control the visibility of the comparison module
+  const [UpdatedFlagValue, setUpdatedFlagValue] = useState(currentFlagValue); // State to control the visibility of the comparison module
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
   };
 
-  const toggleAccordion = (accordionIndex) => {
+  const toggleAccordion = (accordionIndex: number) => {
     setActiveAccordion(
       activeAccordion === accordionIndex ? null : accordionIndex
     );
   };
 
-  const handleSubmit = (e) => {
-    console.log("paramString", paramString);
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Update the cached data in React Query
-    queryClient.setQueryData(["hydrate-flags"], (oldData: any) => {
-      return { ...oldData, [paramString as string]: formData.name };
-    });
-    router.push("/");
-    //setEditKey(null); // Close the modal or form after saving
+
+    //set update value from sub components as users
+    // setUpdatedFlagValue([{ flag: 1 }]);
+    setUpdatedFlagValue(true);
+
+    // Show the comparison module
+    setShowComparison(true);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto mt-10">
-      {/* Accordion 1 */}
-      <div className="border-b">
-        <button
-          type="button"
-          onClick={() => toggleAccordion(1)}
-          className="w-full text-left py-4 px-6 bg-gray-100 hover:bg-gray-200"
-        >
-          <div className="flex justify-between items-center">
-            <span>Section 1: Personal Info</span>
-            <span>{activeAccordion === 1 ? "-" : "+"}</span>
-          </div>
-        </button>
-        {activeAccordion === 1 && (
-          <div className="px-6 py-4 bg-white">
-            {/* Conditionally render form fields */}
-            <InputField
-              label="Name"
-              value={formData.name}
-              onChange={(e) => handleInputChange("name", e.target.value)}
-            />
-            <InputField
-              label="Email"
-              value={formData.email}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-            />
-          </div>
-        )}
-      </div>
+    <div className="max-w-2xl mx-auto mt-10">
+      {!showComparison && (
+        <form onSubmit={handleSubmit}>
+          {/* Accordion for flag editing */}
+          <h3>Editing: {editFlag}</h3>
 
-      {/* Accordion 2 */}
-      <div className="border-b">
-        <button
-          type="button"
-          onClick={() => toggleAccordion(2)}
-          className="w-full text-left py-4 px-6 bg-gray-100 hover:bg-gray-200"
-        >
-          <div className="flex justify-between items-center">
-            <span>Section 2: Contact Info</span>
-            <span>{activeAccordion === 2 ? "-" : "+"}</span>
+          {/* Accordion 1 */}
+          <div className="border-b">
+            <button
+              type="button"
+              onClick={() => toggleAccordion(1)}
+              className="w-full text-left py-4 px-6 bg-gray-100 hover:bg-gray-200"
+            >
+              <div className="flex justify-between items-center">
+                <span>Section 1: Personal Info</span>
+                <span>{activeAccordion === 1 ? "-" : "+"}</span>
+              </div>
+            </button>
+            {activeAccordion === 1 && (
+              <div className="px-6 py-4 bg-white">
+                <InputField
+                  label="Name"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
+                />
+                <InputField
+                  label="Email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
+                />
+              </div>
+            )}
           </div>
-        </button>
-        {activeAccordion === 2 && (
-          <div className="px-6 py-4 bg-white">
-            {/* Conditionally render form fields */}
-            <InputField
-              label="Phone"
-              value={formData.phone}
-              onChange={(e) => handleInputChange("phone", e.target.value)}
-            />
-          </div>
-        )}
-      </div>
 
-      <div className="mt-6">
-        <button
-          type="submit"
-          className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-        >
-          Submit
-        </button>
-      </div>
-    </form>
+          {/* Accordion 2 */}
+          <div className="border-b">
+            <button
+              type="button"
+              onClick={() => toggleAccordion(2)}
+              className="w-full text-left py-4 px-6 bg-gray-100 hover:bg-gray-200"
+            >
+              <div className="flex justify-between items-center">
+                <span>Section 2: Contact Info</span>
+                <span>{activeAccordion === 2 ? "-" : "+"}</span>
+              </div>
+            </button>
+            {activeAccordion === 2 && (
+              <div className="px-6 py-4 bg-white">
+                <InputField
+                  label="Phone"
+                  value={formData.phone}
+                  onChange={(e) => handleInputChange("phone", e.target.value)}
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6">
+            <button
+              type="submit"
+              className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Show comparison module after form submission */}
+      {showComparison && (
+        <div className="mt-6">
+          <FlagComparison
+            flagName={editFlag}
+            beforeValue={currentFlagValue}
+            afterValue={UpdatedFlagValue} // Example of new value after editing
+          />
+
+          {/* Submit button for API call */}
+          {currentFlagValue !== UpdatedFlagValue && (
+            <button
+              onClick={() => {}}
+              className="w-full mt-4 py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700"
+            >
+              Submit Changes
+            </button>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

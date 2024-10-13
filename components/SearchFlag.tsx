@@ -1,38 +1,29 @@
 "use client";
+import { useAppContext } from "@/context/ContextProvider";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
+import { Features as FeatureFlags } from "@/actions/types/fetchFlags"; // Import your types here
+import Link from "next/link";
 
 const FeatureFlagList = () => {
-  // Access the prefetched data from the cache
-  const queryClient = useQueryClient();
-  const config = queryClient.getQueryData(["hydrate-flags"]) as Record<
-    string,
-    any
-  >;
-
+  // Access context
+  const { state } = useAppContext();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Get the main properties of the config object
-  const configKeys = Object.keys(config);
+  // Ensure features is defined, providing an empty object as default
+  const features = state.features || {};
+  const configKeys = Object.keys(features) as Array<keyof FeatureFlags>;
 
   // Filter keys based on the search query
   const filteredKeys = configKeys.filter((key) =>
-    key.toLowerCase().includes(searchQuery.toLowerCase())
+    (key as string).toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Function to render value with appropriate styling
-  const renderValue = (value) => {
+  const renderValue = (value: any) => {
     if (typeof value === "boolean") {
       return <span className="text-green-600">{value.toString()}</span>;
     } else if (Array.isArray(value)) {
-      // Check if the array contains objects with 'segments' and 'value'
-      if (value.every((item) => item.segments && item.value)) {
-        return (
-          <pre className="bg-gray-200 p-2 rounded">
-            <code>{JSON.stringify(value, null, 2)}</code>
-          </pre>
-        );
-      }
       return (
         <pre className="bg-gray-200 p-1 rounded">
           <code>{JSON.stringify(value, null, 2)}</code>
@@ -62,7 +53,7 @@ const FeatureFlagList = () => {
 
       {/* Render Filtered Properties */}
       {filteredKeys.map((key) => {
-        const value = config[key];
+        const value = features[key]; // Accessing the value directly from features
         return (
           <div
             key={key}
@@ -70,9 +61,9 @@ const FeatureFlagList = () => {
           >
             <div className="flex justify-between items-center">
               <strong className="text-lg">{key}</strong>
-              <a href={`/edit/${key}`} className="text-blue-500 underline">
+              <Link href={`/edit/${key}`} className="text-blue-500 underline">
                 Edit
-              </a>
+              </Link>
             </div>
             <div className="mt-1">{renderValue(value)}</div>
           </div>

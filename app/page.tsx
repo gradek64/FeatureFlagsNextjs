@@ -16,10 +16,10 @@ import SearchFlagList from "../components/SearchFlag";
 const HomePage = async () => {
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
+  /*  await queryClient.prefetchQuery({
     queryKey: ["hydrate-flags"],
     queryFn: fetchConfig,
-  });
+  }); */
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
