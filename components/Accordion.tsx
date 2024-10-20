@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAppContext } from "@/context/ContextProvider";
 import FlagComparison from "@/components/FlagComparison"; // Import the comparison component
+import PillsWrapper from "@/components/PillsWrapper"; // Import the comparison component
 
 const InputField = ({ label, value, onChange }) => (
   <div className="mb-4">
@@ -30,7 +31,7 @@ const AccordionForm = ({ editFlag }: { editFlag: string }) => {
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData({ ...formData, [field]: value });
+    //setFormData({ ...formData, [field]: value });
   };
 
   const toggleAccordion = (accordionIndex: number) => {
@@ -40,14 +41,14 @@ const AccordionForm = ({ editFlag }: { editFlag: string }) => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    /* e.preventDefault();
 
     //set update value from sub components as users
     // setUpdatedFlagValue([{ flag: 1 }]);
     setUpdatedFlagValue(true);
 
     // Show the comparison module
-    setShowComparison(true);
+    setShowComparison(true); */
   };
 
   return (
@@ -71,11 +72,7 @@ const AccordionForm = ({ editFlag }: { editFlag: string }) => {
             </button>
             {activeAccordion === 1 && (
               <div className="px-6 py-4 bg-white">
-                <InputField
-                  label="Name"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                />
+                <PillsWrapper />
                 <InputField
                   label="Email"
                   value={formData.email}
@@ -129,14 +126,14 @@ const AccordionForm = ({ editFlag }: { editFlag: string }) => {
           />
 
           {/* Submit button for API call */}
-          {currentFlagValue !== UpdatedFlagValue && (
+          {/* currentFlagValue !== UpdatedFlagValue && (
             <button
               onClick={() => {}}
               className="w-full mt-4 py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700"
             >
               Submit Changes
             </button>
-          )}
+          ) */}
         </div>
       )}
     </div>
